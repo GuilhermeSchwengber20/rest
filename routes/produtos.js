@@ -26,8 +26,8 @@ router.get("/", (req, res, next) => {
                             preco: prod.preco,
                             request: {
                                 tipo: "GET",
-                                descricao: "Retorna todos os produtos",
-                                url: "http://localhost:3000/produtos/" + prod.id_produto
+                                descricao: "Retorna os detalhes de um produto especifico ",
+                                url: "http://localhost:3000/produtos/" + prod.id_produto 
                             }
                         }
                     })
@@ -51,15 +51,15 @@ router.post("/", (req, res, next) => {
                 conn.release();
                 if(error) { return res.status(500).send({error: error}) }
                 const response = {
-                    mensagem: "Produto inserido com sucesso",
+                    mensagem: "Produto inserido com sucesso!",
                     produtoCriado: {
                         id_produto: result.id_produto,
-                        nome: result.nome,
-                        preco: result.preco,
+                        nome: req.body.nome,
+                        preco: req.body.preco,
                         request: {
                             tipo: "GET",
-                            descricao: "Insere um produto",
-                            url: "http://localhost:3000/produtos/"
+                            descricao: "Retorna todos os produtos",
+                            url: "http://localhost:3000/produtos"
                         }
                     } 
                 }
@@ -94,13 +94,13 @@ router.get("/:id_produto", (req, res, next) => {
                         nome: result[0].nome,
                         preco: result[0].preco,
                         request: {
-                            tipo: "POST",
-                            descricao: "Retorna um produto",
-                            url: "http://localhost:3000/produtos/"
+                            tipo: "GET",
+                            descricao: "Retorna todos os produtos",
+                            url: "http://localhost:3000/produtos"
                         }
                     } 
                 }
-                return res.status(201).send(response);
+                return res.status(200).send(response);
             }
         )
     })
@@ -125,9 +125,20 @@ router.patch("/", (req, res, next) => {
                 conn.release();
                 if(error) { return res.status(500).send({error: error}) }
 
-                res.status(202).send({
-                    mensagem: "Produto alterado com sucesso!",
-                });
+                const response = {
+                    mensagem: "Produto atualizado com sucesso!",
+                    produtoAtualizado: {
+                        id_produto: result.id_produto,
+                        nome: req.body.nome,
+                        preco: req.body.preco,
+                        request: {
+                            tipo: "GET",
+                            descricao: "Retorna os detalhes de um produto especifico",
+                            url: "http://localhost:3000/produtos/" + req.body.id_produto
+                        }
+                    } 
+                }
+                return res.status(202).send(response);
             }
         )
     })
@@ -145,10 +156,19 @@ router.delete("/", (req, res, next) => {
                 //IMPORTANTISSIMO
                 conn.release();
                 if(error) { return res.status(500).send({error: error}) }
-
-                res.status(202).send({
+                const response = {
                     mensagem: "Produto removido com sucesso!",
-                });
+                    request: {
+                        tipo: "POST",
+                        descricao: "Insere um produto",
+                        url: "http://localhost:3000/produtos",
+                        body: {
+                            nome: "String",
+                            preco: "Number"
+                        }
+                    }
+                }
+                return res.status(202).send(response);
             }
         )
     })
