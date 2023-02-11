@@ -168,7 +168,7 @@ router.delete("/", (req, res, next) => {
                         }
                     }
                 }
-                return res.status(202).send(response);
+                return res.status(202).send(response)
             }
         )
     })
